@@ -2,7 +2,7 @@
 
 > 현재 날씨를 자동으로 확인하고, 날씨에 딱 맞는 메뉴를 추천해드리는 실용 도구.
 
-**▶ 지금 바로 사용** → [https://mindweaver74.github.io/Weather-Menu](https://mindweaver74.github.io/Weather-Menu)
+**▶ 지금 바로 사용** → [https://mindweaver74.github.io/weather-menu](https://mindweaver74.github.io/weather-menu)
 
 ---
 
