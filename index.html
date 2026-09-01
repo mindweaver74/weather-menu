@@ -4,133 +4,197 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="description" content="오늘 날씨에 딱 맞는 메뉴를 추천해드려요! 비 오는 날엔 따뜻한 국물, 더운 날엔 시원한 냉면.">
-<meta property="og:title" content="🌤️ 오늘 뭐 먹지? — 날씨 기반 메뉴 추천">
+<meta name="description" content="오늘 날씨와 운세를 함께 분석해 딱 맞는 메뉴를 추천해드려요!">
+<meta property="og:title" content="🌤️ 오늘 뭐 먹지? — 날씨 + 운세 메뉴 추천">
 <title>🌤️ 오늘 뭐 먹지?</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8357338943233901" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
 html,body{width:100%;min-height:100%;background:linear-gradient(135deg,#e8f4fd,#f0f8ff);font-family:-apple-system,'Apple SD Gothic Neo',Arial,sans-serif;}
-
 #wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;
-  padding:max(20px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));
-  max-width:480px;margin:0 auto;}
+  padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));
+  max-width:480px;margin:0 auto;gap:12px;}
 
 /* 헤더 */
-#hdr{width:100%;text-align:center;margin-bottom:20px;}
-#hdr h1{font-size:22px;font-weight:900;color:#1a2a5e;margin-bottom:4px;}
+#hdr{width:100%;text-align:center;}
+#hdr h1{font-size:22px;font-weight:900;color:#1a2a5e;margin-bottom:3px;}
 #hdr p{font-size:12px;color:rgba(80,100,160,0.6);}
 
 /* 날씨 카드 */
-#weather-card{width:100%;background:#fff;border-radius:20px;padding:20px;
-  box-shadow:0 4px 20px rgba(100,130,200,0.15);margin-bottom:16px;
-  border:1px solid rgba(100,130,200,0.1);}
-#w-loading{text-align:center;padding:20px;color:rgba(80,100,160,0.5);font-size:13px;}
-#w-main{display:none;}
-.w-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-#w-icon{font-size:48px;line-height:1;}
-.w-info{text-align:right;}
-#w-temp{font-size:36px;font-weight:900;color:#1a2a5e;line-height:1;}
-#w-feel{font-size:11px;color:rgba(80,100,160,0.6);margin-top:2px;}
-#w-desc{font-size:14px;font-weight:700;color:#3498db;}
-#w-loc{font-size:11px;color:rgba(80,100,160,0.5);margin-top:2px;}
-.w-detail{display:flex;gap:8px;margin-top:8px;}
-.w-chip{flex:1;background:#f0f4ff;border-radius:10px;padding:6px 8px;text-align:center;}
-.w-chip-lbl{font-size:9px;color:rgba(80,100,160,0.5);letter-spacing:.5px;}
-.w-chip-val{font-size:13px;font-weight:700;color:#1a2a5e;margin-top:1px;}
+.card{width:100%;background:#fff;border-radius:18px;padding:16px;
+  box-shadow:0 3px 16px rgba(100,130,200,0.12);border:1px solid rgba(100,130,200,0.09);}
+.card-title{font-size:11px;font-weight:700;color:rgba(80,100,160,0.5);
+  letter-spacing:1px;margin-bottom:10px;}
 
-/* 메뉴 추천 */
-#menu-section{width:100%;}
-#menu-title{font-size:13px;font-weight:700;color:#1a2a5e;margin-bottom:10px;
-  display:flex;align-items:center;gap:6px;}
-#menu-tag{font-size:10px;background:#3498db;color:#fff;border-radius:20px;padding:2px 8px;}
-
-#menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.menu-card{background:#fff;border-radius:16px;padding:14px 12px;text-align:center;
-  box-shadow:0 2px 12px rgba(100,130,200,0.1);border:1px solid rgba(100,130,200,0.08);
-  cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden;}
-.menu-card:active{transform:scale(0.96);}
-.menu-card.picked{border-color:#3498db;box-shadow:0 2px 16px rgba(52,152,219,0.25);}
-.menu-card .m-emoji{font-size:32px;margin-bottom:6px;display:block;}
-.menu-card .m-name{font-size:14px;font-weight:700;color:#1a2a5e;}
-.menu-card .m-desc{font-size:10px;color:rgba(80,100,160,0.5);margin-top:3px;line-height:1.5;}
-.menu-card .m-why{font-size:10px;color:#3498db;margin-top:5px;font-weight:600;}
-.menu-card .m-badge{position:absolute;top:8px;right:8px;
-  font-size:9px;background:#f39c12;color:#fff;border-radius:20px;padding:2px 6px;}
-
-/* 랜덤 버튼 */
-#btn-shuffle{width:100%;padding:14px;border-radius:50px;border:none;
-  background:linear-gradient(135deg,#3498db,#2ecc71);color:#fff;
-  font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;
-  box-shadow:0 4px 15px rgba(52,152,219,0.3);}
-#btn-shuffle:active{transform:scale(0.97);}
-
-#btn-retry{width:100%;padding:11px;border-radius:50px;
-  border:1px solid rgba(100,130,200,0.25);background:#fff;
-  color:#1a2a5e;font-size:13px;font-weight:600;cursor:pointer;}
-
-/* 날씨 멘트 */
-#w-comment{width:100%;background:linear-gradient(135deg,rgba(52,152,219,0.08),rgba(46,204,113,0.08));
-  border-radius:14px;padding:12px 16px;margin-bottom:14px;
-  border-left:3px solid #3498db;}
-#w-comment p{font-size:12px;color:rgba(60,80,140,0.8);line-height:1.7;}
-#w-comment strong{color:#1a2a5e;}
-
-/* 오류 */
-#err{display:none;text-align:center;padding:16px;color:rgba(80,100,160,0.5);font-size:13px;}
-#btn-manual{margin-top:8px;padding:8px 16px;border-radius:20px;
-  border:1px solid rgba(100,130,200,0.25);background:#fff;
+/* 날씨 */
+.w-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+#w-icon{font-size:44px;line-height:1;}
+.w-right{text-align:right;}
+#w-temp{font-size:34px;font-weight:900;color:#1a2a5e;line-height:1;}
+#w-feel{font-size:11px;color:rgba(80,100,160,0.55);margin-top:2px;}
+#w-desc{font-size:13px;font-weight:700;color:#3498db;margin-top:2px;}
+#w-loc{font-size:11px;color:rgba(80,100,160,0.45);margin-top:2px;}
+.w-chips{display:flex;gap:6px;}
+.w-chip{flex:1;background:#f5f7ff;border-radius:10px;padding:5px 6px;text-align:center;}
+.w-chip-l{font-size:9px;color:rgba(80,100,160,0.5);letter-spacing:.4px;}
+.w-chip-v{font-size:12px;font-weight:700;color:#1a2a5e;margin-top:1px;}
+#w-loading{text-align:center;padding:16px;color:rgba(80,100,160,0.45);font-size:12px;}
+#w-err{display:none;text-align:center;padding:10px;}
+#btn-seoul{margin-top:6px;padding:7px 16px;border-radius:20px;
+  border:1px solid rgba(100,130,200,0.25);background:#f5f7ff;
   color:#3498db;font-size:12px;cursor:pointer;}
 
-#footer{margin-top:auto;padding-top:20px;text-align:center;}
-#footer a{font-size:10px;color:rgba(80,100,160,0.35);text-decoration:none;margin:0 6px;}
+/* 운세 입력 */
+#fortune-form{width:100%;}
+.f-label{font-size:12px;font-weight:700;color:#1a2a5e;margin-bottom:6px;display:block;}
+.f-row{display:flex;gap:8px;align-items:center;}
+.f-input{flex:1;padding:11px 14px;border-radius:12px;
+  border:1.5px solid rgba(100,130,200,0.2);background:#f5f7ff;
+  font-size:15px;color:#1a2a5e;outline:none;
+  -webkit-appearance:none;text-align:center;}
+.f-input:focus{border-color:#9b59b6;}
+#btn-fortune{padding:11px 20px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#9b59b6,#8e44ad);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.f-hint{font-size:10px;color:rgba(80,100,160,0.4);margin-top:5px;}
+
+/* 운세 결과 미니 카드 */
+#fortune-result{display:none;width:100%;}
+.fortune-mini{background:linear-gradient(135deg,rgba(155,89,182,0.08),rgba(142,68,173,0.05));
+  border-radius:14px;padding:12px 14px;border:1px solid rgba(155,89,182,0.15);}
+.fortune-mini-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.fortune-mini-name{font-size:13px;font-weight:700;color:#1a2a5e;}
+.fortune-mini-star{font-size:12px;color:#f39c12;}
+.fortune-bars{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.f-bar-row{display:flex;align-items:center;gap:6px;}
+.f-bar-lbl{font-size:10px;color:rgba(80,100,160,0.55);width:28px;flex-shrink:0;}
+.f-bar-bg{flex:1;height:5px;background:rgba(100,130,200,0.12);border-radius:3px;overflow:hidden;}
+.f-bar-fill{height:100%;border-radius:3px;transition:width .5s;}
+.f-bar-val{font-size:10px;font-weight:700;color:#9b59b6;width:16px;text-align:right;flex-shrink:0;}
+
+/* 통합 분석 결과 */
+#result-section{display:none;width:100%;}
+.result-comment{background:linear-gradient(135deg,rgba(52,152,219,0.07),rgba(155,89,182,0.07));
+  border-radius:14px;padding:12px 14px;margin-bottom:10px;
+  border-left:3px solid;}
+.result-comment p{font-size:12px;color:rgba(60,80,140,0.8);line-height:1.75;}
+.result-comment strong{color:#1a2a5e;}
+
+#menu-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+#menu-title-txt{font-size:13px;font-weight:700;color:#1a2a5e;}
+.menu-tags{display:flex;gap:5px;}
+.mtag{font-size:10px;border-radius:20px;padding:2px 8px;font-weight:600;}
+.mtag-weather{background:rgba(52,152,219,0.12);color:#2980b9;}
+.mtag-fortune{background:rgba(155,89,182,0.12);color:#8e44ad;}
+
+#menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;}
+.menu-card{background:#fff;border-radius:14px;padding:12px 10px;text-align:center;
+  box-shadow:0 2px 10px rgba(100,130,200,0.09);border:1px solid rgba(100,130,200,0.07);
+  cursor:pointer;transition:transform .1s,box-shadow .1s;position:relative;overflow:hidden;}
+.menu-card:active{transform:scale(0.96);}
+.menu-card.picked{border-color:#9b59b6;box-shadow:0 2px 14px rgba(155,89,182,0.22);}
+.menu-card.highlight{border-color:#f39c12;box-shadow:0 2px 14px rgba(243,156,18,0.2);}
+.m-emoji{font-size:30px;margin-bottom:5px;display:block;}
+.m-name{font-size:13px;font-weight:700;color:#1a2a5e;}
+.m-desc{font-size:9px;color:rgba(80,100,160,0.45);margin-top:2px;line-height:1.4;}
+.m-why{font-size:10px;color:#9b59b6;margin-top:4px;font-weight:600;line-height:1.4;}
+.m-badge{position:absolute;top:7px;right:7px;
+  font-size:9px;border-radius:20px;padding:2px 6px;font-weight:700;}
+.badge-weather{background:rgba(52,152,219,0.15);color:#2980b9;}
+.badge-fortune{background:rgba(155,89,182,0.15);color:#8e44ad;}
+.badge-both{background:linear-gradient(135deg,rgba(52,152,219,0.15),rgba(155,89,182,0.15));color:#6c3483;}
+.badge-popular{background:rgba(243,156,18,0.15);color:#e67e22;}
+
+#btn-shuffle{width:100%;padding:13px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,#3498db,#9b59b6);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 14px rgba(100,80,180,0.25);}
+#btn-shuffle:active{transform:scale(0.97);}
+#btn-reset{width:100%;padding:10px;border-radius:50px;margin-top:6px;
+  border:1px solid rgba(100,130,200,0.2);background:#fff;
+  color:rgba(80,100,160,0.6);font-size:12px;cursor:pointer;}
+
+#footer{margin-top:auto;padding-top:12px;text-align:center;}
+#footer a{font-size:10px;color:rgba(80,100,160,0.3);text-decoration:none;margin:0 6px;}
 </style>
 </head>
 <body>
 <div id="wrap">
   <div id="hdr">
-    <h1>🌤️ 오늘 뭐 먹지?</h1>
-    <p>날씨를 보고 딱 맞는 메뉴를 추천해드려요</p>
+    <h1>🌤️🔮 오늘 뭐 먹지?</h1>
+    <p>날씨 + 오늘의 운세로 딱 맞는 메뉴를 추천해드려요</p>
   </div>
 
-  <div id="weather-card">
+  <!-- 날씨 카드 -->
+  <div class="card" id="weather-card">
+    <div class="card-title">☀️ 오늘의 날씨</div>
     <div id="w-loading">📍 위치 확인 중...</div>
-    <div id="w-main">
+    <div id="w-main" style="display:none;">
       <div class="w-row">
         <div>
           <div id="w-icon">☀️</div>
           <div id="w-desc">맑음</div>
           <div id="w-loc">📍 위치 확인 중</div>
         </div>
-        <div class="w-info">
+        <div class="w-right">
           <div id="w-temp">--°</div>
           <div id="w-feel">체감 --°</div>
         </div>
       </div>
-      <div class="w-detail">
-        <div class="w-chip"><div class="w-chip-lbl">💧 습도</div><div class="w-chip-val" id="w-hum">--%</div></div>
-        <div class="w-chip"><div class="w-chip-lbl">💨 바람</div><div class="w-chip-val" id="w-wind">--m/s</div></div>
-        <div class="w-chip"><div class="w-chip-lbl">☁️ 구름</div><div class="w-chip-val" id="w-cloud">--%</div></div>
+      <div class="w-chips">
+        <div class="w-chip"><div class="w-chip-l">💧 습도</div><div class="w-chip-v" id="w-hum">--%</div></div>
+        <div class="w-chip"><div class="w-chip-l">💨 바람</div><div class="w-chip-v" id="w-wind">--</div></div>
+        <div class="w-chip"><div class="w-chip-l">☁️ 구름</div><div class="w-chip-v" id="w-cloud">--%</div></div>
       </div>
     </div>
-    <div id="err">
-      <div>📍 위치를 가져올 수 없어요</div>
-      <button id="btn-manual" onclick="useDefaultLocation()">서울 날씨로 보기</button>
+    <div id="w-err">
+      <div style="font-size:12px;color:rgba(80,100,160,0.5);">위치를 가져올 수 없어요</div>
+      <button id="btn-seoul" onclick="useSeoul()">서울 날씨로 보기</button>
     </div>
   </div>
 
-  <div id="w-comment" style="display:none;">
-    <p id="w-comment-txt"></p>
+  <!-- 운세 입력 -->
+  <div class="card" id="fortune-card">
+    <div class="card-title">🔮 오늘의 운세</div>
+    <div id="fortune-form">
+      <label class="f-label">생년월일을 입력하세요</label>
+      <div class="f-row">
+        <input class="f-input" id="birth-input" type="number" placeholder="예) 19900315" maxlength="8" inputmode="numeric">
+        <button id="btn-fortune" onclick="calcFortune()">운세 보기</button>
+      </div>
+      <div class="f-hint">* 숫자 8자리 (YYYYMMDD) · 저장되지 않아요</div>
+    </div>
+    <div id="fortune-result">
+      <div class="fortune-mini">
+        <div class="fortune-mini-top">
+          <div class="fortune-mini-name" id="f-name">--년생</div>
+          <div class="fortune-mini-star" id="f-star">★★★★☆</div>
+        </div>
+        <div class="fortune-bars">
+          <div class="f-bar-row"><span class="f-bar-lbl">총운</span><div class="f-bar-bg"><div class="f-bar-fill" id="fb-total" style="background:#9b59b6;"></div></div><span class="f-bar-val" id="fv-total">-</span></div>
+          <div class="f-bar-row"><span class="f-bar-lbl">금전</span><div class="f-bar-bg"><div class="f-bar-fill" id="fb-money" style="background:#f39c12;"></div></div><span class="f-bar-val" id="fv-money">-</span></div>
+          <div class="f-bar-row"><span class="f-bar-lbl">건강</span><div class="f-bar-bg"><div class="f-bar-fill" id="fb-health" style="background:#2ecc71;"></div></div><span class="f-bar-val" id="fv-health">-</span></div>
+          <div class="f-bar-row"><span class="f-bar-lbl">애정</span><div class="f-bar-bg"><div class="f-bar-fill" id="fb-love" style="background:#e74c3c;"></div></div><span class="f-bar-val" id="fv-love">-</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="menu-section" style="display:none;">
-    <div id="menu-title">
-      🍽️ 오늘의 추천 메뉴
-      <span id="menu-tag">날씨 맞춤</span>
+  <!-- 통합 추천 결과 -->
+  <div id="result-section">
+    <div class="result-comment" id="result-comment">
+      <p id="result-comment-txt"></p>
+    </div>
+    <div id="menu-title-row">
+      <div id="menu-title-txt">🍽️ 오늘의 추천 메뉴</div>
+      <div class="menu-tags">
+        <span class="mtag mtag-weather" id="tag-weather">날씨</span>
+        <span class="mtag mtag-fortune" id="tag-fortune">운세</span>
+      </div>
     </div>
     <div id="menu-grid"></div>
     <button id="btn-shuffle" onclick="shuffle()">🎲 다른 메뉴 추천받기</button>
-    <button id="btn-retry" onclick="retryLocation()">📍 위치 다시 가져오기</button>
+    <button id="btn-reset" onclick="resetFortune()">↺ 생년월일 다시 입력</button>
   </div>
 
   <div id="footer">
@@ -140,303 +204,326 @@ html,body{width:100%;min-height:100%;background:linear-gradient(135deg,#e8f4fd,#
 </div>
 
 <script>
-// ── 메뉴 데이터베이스 ──
-var MENUS = {
-  // hot
-  hot: [
-    {emoji:'🍜',name:'냉면',desc:'평양냉면 / 비빔냉면',why:'더운 날엔 역시 시원한 냉면!',badge:''},
-    {emoji:'🍣',name:'초밥',desc:'신선한 초밥 한 판',why:'더위를 잊게 하는 시원함',badge:''},
-    {emoji:'🥗',name:'샐러드',desc:'신선한 채소 샐러드',why:'가볍고 시원하게',badge:''},
-    {emoji:'🍧',name:'빙수',desc:'팥빙수 / 과일빙수',why:'더위 탈출 필수!',badge:'인기'},
-    {emoji:'🍦',name:'아이스크림',desc:'소프트 / 컵 아이스크림',why:'더위 탈출!',badge:''},
-    {emoji:'🍜',name:'냉우동',desc:'쫄깃한 냉우동',why:'시원하고 든든하게',badge:''},
-    {emoji:'🍜',name:'콩국수',desc:'고소한 콩국수',why:'여름 별미!',badge:'계절'},
-    {emoji:'🍚',name:'해물덮밥',desc:'신선한 해물덮밥',why:'여름엔 해물!',badge:''},
-    {emoji:'🥙',name:'랩샌드위치',desc:'신선한 야채 랩',why:'간편하게 더위 식히기',badge:''},
-    {emoji:'🍱',name:'도시락',desc:'집밥 느낌 도시락',why:'실내에서 간편하게',badge:''},
-  ],
-  // mild
-  mild: [
-    {emoji:'🍝',name:'파스타',desc:'크림 / 토마토 파스타',why:'딱 좋은 날씨에 여유롭게',badge:''},
-    {emoji:'🍕',name:'피자',desc:'화덕 피자',why:'좋은 날씨에 맛있는 피자',badge:'인기'},
-    {emoji:'🍚',name:'제육덮밥',desc:'매콤한 제육덮밥',why:'가볍고 든든하게',badge:''},
-    {emoji:'🍔',name:'버거',desc:'수제 버거',why:'나들이 가기 좋은 날씨',badge:''},
-    {emoji:'🥩',name:'스테이크',desc:'풍성한 스테이크',why:'좋은 날 특별한 한 끼',badge:''},
-    {emoji:'🍱',name:'한정식',desc:'정갈한 한정식',why:'여유로운 날 특별 식사',badge:''},
-    {emoji:'🍜',name:'라멘',desc:'일본식 라멘',why:'선선한 날 국물 한 그릇',badge:''},
-    {emoji:'🌯',name:'케밥',desc:'고소한 케밥',why:'바깥에서 즐기기 좋아',badge:''},
-    {emoji:'🍚',name:'비빔밥',desc:'알록달록 비빔밥',why:'건강하고 맛있게',badge:''},
-    {emoji:'🐟',name:'회',desc:'싱싱한 모듬회',why:'맑은 날엔 회가 최고',badge:''},
-  ],
-  // cold
-  cold: [
-    {emoji:'🍲',name:'부대찌개',desc:'얼큰한 부대찌개',why:'추운 날엔 뜨끈한 국물!',badge:'인기'},
-    {emoji:'🫕',name:'샤부샤부',desc:'뜨끈한 샤부샤부',why:'온몸이 따뜻해져요',badge:''},
-    {emoji:'🍜',name:'라면',desc:'끓여먹는 라면',why:'추운 날 최고의 위로',badge:''},
-    {emoji:'🥘',name:'순두부찌개',desc:'뽀얀 순두부찌개',why:'속 따뜻하게',badge:''},
-    {emoji:'🍛',name:'카레라이스',desc:'뜨끈한 카레',why:'추위를 날려버려요',badge:''},
-    {emoji:'🍲',name:'갈비탕',desc:'진한 갈비탕',why:'추운 날 보양식',badge:''},
-    {emoji:'🥓',name:'삼겹살',desc:'구워먹는 삼겹살',why:'소주 한 잔과 함께',badge:'인기'},
-    {emoji:'🍲',name:'김치찌개',desc:'얼큰한 김치찌개',why:'한국인의 소울푸드',badge:''},
-    {emoji:'🥣',name:'국밥',desc:'뚝배기 국밥',why:'추위에 지친 몸에 최고',badge:''},
-    {emoji:'🍲',name:'우거지탕',desc:'구수한 우거지탕',why:'한국의 맛',badge:''},
-  ],
-  // rainy
-  rainy: [
-    {emoji:'🥞',name:'파전+막걸리',desc:'비오는 날 국룰 조합',why:'비 오는 날의 국룰!',badge:'국룰'},
-    {emoji:'🥣',name:'순댓국',desc:'뜨끈한 순댓국',why:'빗속에서 따뜻하게',badge:''},
-    {emoji:'🍜',name:'칼국수',desc:'손칼국수',why:'비오는 날 국물이 최고',badge:'인기'},
-    {emoji:'🍳',name:'계란말이',desc:'폭신한 계란말이',why:'집에서 뚝딱 해먹기',badge:''},
-    {emoji:'🍲',name:'된장찌개',desc:'구수한 된장찌개',why:'비 오는 날 집밥이 최고',badge:''},
-    {emoji:'🥘',name:'육개장',desc:'얼큰한 육개장',why:'빗소리 들으며 한 그릇',badge:''},
-    {emoji:'🍜',name:'짬뽕',desc:'얼큰한 짬뽕',why:'비 오는 날 짬뽕 생각!',badge:''},
-    {emoji:'🍕',name:'피자 배달',desc:'따뜻한 피자',why:'비 오는 날엔 배달!',badge:'추천'},
-    {emoji:'🍗',name:'치킨',desc:'바삭한 치킨',why:'비 오는 날 치맥!',badge:''},
-    {emoji:'🍡',name:'떡볶이',desc:'매콤한 떡볶이',why:'비 오는 날 분식!',badge:''},
-  ],
-  // snowy
-  snowy: [
-    {emoji:'🍢',name:'어묵탕',desc:'뜨끈한 어묵탕',why:'눈 오는 날 최고 조합!',badge:'국룰'},
-    {emoji:'🥓',name:'삼겹살',desc:'뭉근하게 삼겹살',why:'눈 구경하며 고기파티',badge:''},
-    {emoji:'🍜',name:'라면',desc:'뜨끈한 라면',why:'눈 오는 날 라면 생각!',badge:'인기'},
-    {emoji:'🫕',name:'전골',desc:'얼큰한 전골',why:'온 가족이 함께',badge:''},
-    {emoji:'🍲',name:'부대찌개',desc:'푸짐한 부대찌개',why:'눈 구경하며 따뜻하게',badge:''},
-    {emoji:'🥣',name:'설렁탕',desc:'뽀얀 설렁탕',why:'눈 오는 날 보양',badge:''},
-    {emoji:'🥮',name:'호떡',desc:'달콤한 호떡',why:'눈 오는 날 길거리 간식',badge:''},
-    {emoji:'🍖',name:'감자탕',desc:'진한 감자탕',why:'뼈다귀 해장국',badge:''},
-  ],
-  // cloudy
-  cloudy: [
-    {emoji:'🍝',name:'짜장면',desc:'윤기 나는 짜장면',why:'흐린 날엔 짜장면!',badge:'국룰'},
-    {emoji:'🍚',name:'비빔밥',desc:'알록달록 비빔밥',why:'기분 전환 한 그릇',badge:''},
-    {emoji:'🍔',name:'버거',desc:'든든한 버거',why:'간편하게 한 끼',badge:''},
-    {emoji:'🍝',name:'파스타',desc:'크림 파스타',why:'실내에서 여유롭게',badge:''},
-    {emoji:'🍛',name:'카레',desc:'향긋한 카레',why:'흐린 날 기분 up!',badge:''},
-    {emoji:'🍱',name:'돈가스',desc:'바삭한 돈가스',why:'든든하게 한 끼',badge:'인기'},
-    {emoji:'🍱',name:'도시락',desc:'집에서 만든 도시락',why:'흐린 날 소박하게',badge:''},
-    {emoji:'🍜',name:'쌀국수',desc:'담백한 쌀국수',why:'가볍게 한 끼',badge:''},
-  ],
-};
-
-// ── 날씨 코드 → 상태 매핑 (Open-Meteo WMO) ──
-function getWeatherState(code, temp, isDay) {
-  if (code === 0) return temp >= 25 ? 'hot' : temp >= 15 ? 'mild' : 'cold'; // 맑음
-  if (code <= 3) return temp >= 25 ? 'hot' : temp >= 15 ? 'mild' : 'cold'; // 구름
-  if (code <= 48) return 'cloudy'; // 안개
-  if (code <= 67) return 'rainy';  // 비
-  if (code <= 77) return 'snowy';  // 눈
-  if (code <= 82) return 'rainy';  // 소나기
-  if (code <= 86) return 'snowy';  // 눈 소나기
-  return 'rainy'; // 뇌우
-}
-
-function getWeatherIcon(code, isDay) {
-  if (code === 0) return isDay ? '☀️' : '🌙';
-  if (code <= 2) return isDay ? '⛅' : '🌙';
-  if (code === 3) return '☁️';
-  if (code <= 48) return '🌫️';
-  if (code <= 55) return '🌦️';
-  if (code <= 67) return '🌧️';
-  if (code <= 77) return '❄️';
-  if (code <= 82) return '🌦️';
-  if (code <= 86) return '🌨️';
-  return '⛈️';
-}
-
-function getWeatherDesc(code, temp) {
-  if (code === 0) return temp >= 30 ? '폭염' : temp >= 25 ? '맑고 더움' : temp >= 15 ? '맑음' : '맑고 추움';
-  if (code <= 2) return '구름 조금';
-  if (code === 3) return '흐림';
-  if (code <= 48) return '안개';
-  if (code <= 55) return '이슬비';
-  if (code <= 67) return '비';
-  if (code <= 77) return '눈';
-  if (code <= 82) return '소나기';
-  if (code <= 86) return '눈 소나기';
-  return '뇌우';
-}
-
-function getWeatherComment(state, temp) {
-  var comments = {
-    hot: [
-      `<strong>${temp}°의 더운 날씨!</strong> 시원한 메뉴로 더위를 날려버려요 🥤`,
-      `<strong>오늘은 ${temp}°까지 올라요.</strong> 냉방 가동하고 시원한 음식으로 에너지 충전! ❄️`,
-    ],
-    mild: [
-      `<strong>딱 좋은 날씨 ${temp}°!</strong> 야외에서 먹어도 좋고, 실내에서 여유롭게 즐겨도 좋아요 😊`,
-      `<strong>${temp}°의 선선한 날씨.</strong> 오늘은 뭘 먹어도 맛있을 것 같은 날이에요! 🌟`,
-    ],
-    cold: [
-      `<strong>오늘은 ${temp}°로 쌀쌀해요.</strong> 따뜻한 국물로 몸을 녹여봐요 🍲`,
-      `<strong>${temp}°의 추운 날씨!</strong> 따끈따끈한 메뉴가 정답이에요 🔥`,
-    ],
-    rainy: [
-      `<strong>비 오는 날!</strong> 역시 파전에 막걸리... 아니면 얼큰한 국물 어떠세요? ☔`,
-      `<strong>오늘은 우산 챙기세요!</strong> 비 오는 날엔 따뜻한 국물이 최고예요 🌧️`,
-    ],
-    snowy: [
-      `<strong>눈이 내려요! ❄️</strong> 따뜻한 실내에서 뜨끈한 메뉴로 눈 구경해요`,
-      `<strong>설경이 아름다운 날!</strong> 따뜻한 음식으로 온몸을 녹여봐요 ⛄`,
-    ],
-    cloudy: [
-      `<strong>흐린 날씨 ${temp}°.</strong> 짜장면이 생각나는 날이에요! ☁️`,
-      `<strong>구름 낀 날씨.</strong> 든든한 한 끼로 기분 전환 어때요? 🍽️`,
-    ],
-  };
-  var arr = comments[state] || comments.mild;
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-// ── 현재 표시 중인 메뉴 ──
-var currentMenus = [];
-var currentState = 'mild';
+// ── 날씨 상태 ──
+var weatherState = null; // hot/mild/cold/rainy/snowy/cloudy
+var weatherTemp  = null;
+var fortuneData  = null; // {total,money,health,love}
 var shuffleCount = 0;
 
-function showMenus(state, count) {
-  count = count || 4;
-  var pool = (MENUS[state] || MENUS.mild).slice();
-  // 섞기
-  for (var i = pool.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+// ── 메뉴 DB ──
+// 각 메뉴: {emoji, name, desc, why, weatherTags:[], fortuneTags:[]}
+// weatherTags: hot/mild/cold/rainy/snowy/cloudy
+// fortuneTags: high_money/low_money/high_health/low_health/high_love/low_love/high_total/low_total
+var MENUS = [
+  // ── 국물·찌개 ──
+  {emoji:'🍲',name:'부대찌개',   desc:'얼큰한 부대찌개',        weatherTags:['cold','rainy','snowy'],fortuneTags:['high_total','low_health']},
+  {emoji:'🍲',name:'김치찌개',   desc:'얼큰한 김치찌개',        weatherTags:['cold','rainy','cloudy'],fortuneTags:['low_money','low_total']},
+  {emoji:'🥘',name:'순두부찌개', desc:'뽀얀 순두부찌개',        weatherTags:['cold','rainy'],         fortuneTags:['low_health','low_total']},
+  {emoji:'🍲',name:'된장찌개',   desc:'구수한 된장찌개',        weatherTags:['cold','rainy','cloudy'],fortuneTags:['low_money','low_health']},
+  {emoji:'🥘',name:'육개장',     desc:'얼큰한 육개장',          weatherTags:['cold','rainy'],         fortuneTags:['low_health','high_total']},
+  {emoji:'🍲',name:'갈비탕',     desc:'진한 갈비탕',            weatherTags:['cold','snowy'],         fortuneTags:['high_money','low_health']},
+  {emoji:'🥣',name:'설렁탕',     desc:'뽀얀 설렁탕',            weatherTags:['cold','snowy'],         fortuneTags:['low_health','low_money']},
+  {emoji:'🥣',name:'국밥',       desc:'뚝배기 국밥',            weatherTags:['cold','rainy','cloudy'],fortuneTags:['low_money','low_total']},
+  {emoji:'🍲',name:'우거지탕',   desc:'구수한 우거지탕',        weatherTags:['cold','rainy'],         fortuneTags:['low_money','low_health']},
+  {emoji:'🍲',name:'감자탕',     desc:'진한 감자탕',            weatherTags:['cold','snowy'],         fortuneTags:['low_money','high_total']},
+  {emoji:'🫕',name:'샤부샤부',   desc:'뜨끈한 샤부샤부',        weatherTags:['cold','snowy'],         fortuneTags:['high_money','high_love']},
+  {emoji:'🫕',name:'전골',       desc:'얼큰한 전골',            weatherTags:['cold','snowy','rainy'], fortuneTags:['high_total','low_health']},
+  // ── 면류 ──
+  {emoji:'🍜',name:'냉면',       desc:'평양냉면 / 비빔냉면',    weatherTags:['hot'],                  fortuneTags:['high_total','low_money']},
+  {emoji:'🍜',name:'냉우동',     desc:'쫄깃한 냉우동',          weatherTags:['hot'],                  fortuneTags:['low_money','low_total']},
+  {emoji:'🥒',name:'콩국수',     desc:'고소한 콩국수',          weatherTags:['hot'],                  fortuneTags:['high_health','low_money']},
+  {emoji:'🍜',name:'라면',       desc:'끓여먹는 라면',          weatherTags:['cold','rainy','snowy'], fortuneTags:['low_money','low_total']},
+  {emoji:'🍜',name:'칼국수',     desc:'손칼국수',               weatherTags:['rainy','cold'],         fortuneTags:['low_money','high_health']},
+  {emoji:'🍜',name:'짬뽕',       desc:'얼큰한 짬뽕',            weatherTags:['rainy','cold'],         fortuneTags:['high_total','low_health']},
+  {emoji:'🍝',name:'짜장면',     desc:'윤기 나는 짜장면',       weatherTags:['cloudy','rainy'],       fortuneTags:['low_money','low_total']},
+  {emoji:'🍜',name:'쌀국수',     desc:'담백한 쌀국수',          weatherTags:['mild','cloudy'],        fortuneTags:['high_health','low_money']},
+  {emoji:'🍜',name:'라멘',       desc:'일본식 라멘',            weatherTags:['mild','cold'],          fortuneTags:['high_total','low_money']},
+  {emoji:'🍝',name:'파스타',     desc:'크림 / 토마토 파스타',   weatherTags:['mild','cloudy'],        fortuneTags:['high_love','high_money']},
+  // ── 밥류·한식 ──
+  {emoji:'🍚',name:'비빔밥',     desc:'알록달록 비빔밥',        weatherTags:['mild','cloudy'],        fortuneTags:['high_health','low_money']},
+  {emoji:'🍚',name:'제육덮밥',   desc:'매콤한 제육덮밥',        weatherTags:['mild','cloudy'],        fortuneTags:['high_total','low_money']},
+  {emoji:'🍚',name:'해물덮밥',   desc:'신선한 해물덮밥',        weatherTags:['hot','mild'],           fortuneTags:['high_money','high_health']},
+  {emoji:'🍱',name:'도시락',     desc:'집밥 느낌 도시락',       weatherTags:['mild','cloudy'],        fortuneTags:['low_money','low_total']},
+  {emoji:'🍱',name:'한정식',     desc:'정갈한 한정식',          weatherTags:['mild'],                 fortuneTags:['high_money','high_total']},
+  {emoji:'🍛',name:'카레라이스', desc:'뜨끈한 카레',            weatherTags:['cold','cloudy'],        fortuneTags:['low_money','high_total']},
+  // ── 고기류 ──
+  {emoji:'🥓',name:'삼겹살',     desc:'구워먹는 삼겹살',        weatherTags:['cold','rainy','snowy'], fortuneTags:['high_total','high_love']},
+  {emoji:'🥩',name:'스테이크',   desc:'풍성한 스테이크',        weatherTags:['mild'],                 fortuneTags:['high_money','high_total']},
+  {emoji:'🍗',name:'치킨',       desc:'바삭한 치킨',            weatherTags:['rainy','cloudy'],       fortuneTags:['high_total','high_love']},
+  {emoji:'🍖',name:'보쌈',       desc:'수육 보쌈',              weatherTags:['cold','rainy'],         fortuneTags:['high_total','high_love']},
+  // ── 일식·해산물 ──
+  {emoji:'🍣',name:'초밥',       desc:'신선한 초밥 한 판',      weatherTags:['hot','mild'],           fortuneTags:['high_money','high_love']},
+  {emoji:'🐟',name:'회',         desc:'싱싱한 모듬회',          weatherTags:['hot','mild'],           fortuneTags:['high_money','high_total']},
+  {emoji:'🍢',name:'어묵탕',     desc:'뜨끈한 어묵탕',          weatherTags:['snowy','cold'],         fortuneTags:['low_money','low_total']},
+  // ── 양식·기타 ──
+  {emoji:'🍕',name:'피자',       desc:'화덕 피자',              weatherTags:['mild','rainy'],         fortuneTags:['high_love','high_total']},
+  {emoji:'🍔',name:'버거',       desc:'수제 버거',              weatherTags:['mild','cloudy'],        fortuneTags:['high_total','low_money']},
+  {emoji:'🌯',name:'케밥',       desc:'고소한 케밥',            weatherTags:['mild'],                 fortuneTags:['high_total','high_love']},
+  {emoji:'🍱',name:'돈가스',     desc:'바삭한 돈가스',          weatherTags:['mild','cloudy'],        fortuneTags:['high_total','low_money']},
+  // ── 분식 ──
+  {emoji:'🍡',name:'떡볶이',     desc:'매콤한 떡볶이',          weatherTags:['rainy','cloudy'],       fortuneTags:['low_money','high_total']},
+  {emoji:'🥞',name:'파전+막걸리',desc:'비오는 날 국룰',         weatherTags:['rainy'],                fortuneTags:['high_total','high_love']},
+  // ── 여름·시원한 것 ──
+  {emoji:'🍧',name:'빙수',       desc:'팥빙수 / 과일빙수',      weatherTags:['hot'],                  fortuneTags:['high_love','high_total']},
+  {emoji:'🍦',name:'아이스크림', desc:'소프트 아이스크림',      weatherTags:['hot'],                  fortuneTags:['high_love','low_total']},
+  {emoji:'🥗',name:'샐러드',     desc:'신선한 채소 샐러드',     weatherTags:['hot'],                  fortuneTags:['high_health','high_love']},
+  // ── 보양식 ──
+  {emoji:'🍲',name:'삼계탕',     desc:'진한 삼계탕',            weatherTags:['hot','mild'],           fortuneTags:['low_health','high_money']},
+  {emoji:'🥮',name:'호떡',       desc:'달콤한 호떡',            weatherTags:['snowy','cold'],         fortuneTags:['low_money','high_love']},
+];
+
+// ── 운세 계산 ──
+function calcFortune() {
+  var raw = document.getElementById('birth-input').value.replace(/\D/g,'');
+  if (raw.length < 6) { alert('생년월일을 6자리 이상 입력해주세요'); return; }
+
+  var year  = parseInt(raw.slice(0,4)||raw.slice(0,2)) || 1990;
+  var month = parseInt(raw.slice(4,6)||'01') || 1;
+  var day   = parseInt(raw.slice(6,8)||'01') || 1;
+
+  var today = new Date();
+  var seed  = year * 10000 + month * 100 + day +
+              today.getFullYear() * 365 + today.getMonth() * 31 + today.getDate();
+
+  function rng(s){ s=(s^(s>>16))*0x45d9f3b; s=(s^(s>>16))*0x45d9f3b; return (s^(s>>16))>>>0; }
+  var r1=rng(seed), r2=rng(seed+1), r3=rng(seed+2), r4=rng(seed+3);
+  var total  = 40 + (r1%55);
+  var money  = 35 + (r2%60);
+  var health = 40 + (r3%55);
+  var love   = 35 + (r4%60);
+
+  fortuneData = {total,money,health,love};
+
+  // 운세 UI 표시
+  document.getElementById('fortune-form').style.display='none';
+  document.getElementById('fortune-result').style.display='block';
+
+  var age = today.getFullYear() - year + 1;
+  document.getElementById('f-name').textContent = year+'년생 ('+age+'세)';
+
+  var stars = Math.round(total/20);
+  document.getElementById('f-star').textContent = '★'.repeat(stars) + '☆'.repeat(5-stars);
+
+  function setBar(id,vid,val){
+    document.getElementById(id).style.width = val+'%';
+    document.getElementById(vid).textContent = val;
+    setTimeout(function(){ document.getElementById(id).style.width = val+'%'; },100);
   }
-  currentMenus = pool.slice(0, count);
+  setBar('fb-total','fv-total',total);
+  setBar('fb-money','fv-money',money);
+  setBar('fb-health','fv-health',health);
+  setBar('fb-love','fv-love',love);
+
+  // 결과가 둘 다 있으면 추천
+  if (weatherState) showResult();
+}
+
+// ── 날씨 API ──
+function getWeatherState(code, temp) {
+  if ([61,63,65,66,67,80,81,82].includes(code)) return 'rainy';
+  if ([71,73,75,77,85,86].includes(code)) return 'snowy';
+  if (code >= 95) return 'rainy';
+  if ([3,45,48].includes(code)) return 'cloudy';
+  if (code >= 1 && code <= 2) return temp>=25?'hot':temp>=15?'mild':'cold';
+  if (code === 0) return temp>=25?'hot':temp>=15?'mild':'cold';
+  return temp>=25?'hot':temp>=15?'mild':'cold';
+}
+var WEATHER_ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',
+  77:'🌨️',80:'🌦️',81:'🌧️',82:'🌧️',85:'🌨️',86:'🌨️',95:'⛈️'};
+var WEATHER_DESC = {0:'맑음',1:'구름 조금',2:'구름 많음',3:'흐림',45:'안개',48:'안개',
+  51:'이슬비',53:'이슬비',55:'이슬비',61:'비',63:'비',65:'강한 비',
+  71:'눈',73:'눈',75:'강한 눈',77:'눈발',80:'소나기',81:'소나기',82:'강한 소나기',
+  85:'눈 소나기',86:'눈 소나기',95:'뇌우'};
+
+function loadWeather(lat, lon, locName) {
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+
+    '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,cloud_cover'+
+    '&timezone=Asia%2FSeoul&forecast_days=1';
+  fetch(url).then(function(r){return r.json();}).then(function(d){
+    var c = d.current;
+    var temp  = Math.round(c.temperature_2m);
+    var feel  = Math.round(c.apparent_temperature);
+    var code  = c.weather_code;
+    weatherTemp  = temp;
+    weatherState = getWeatherState(code, temp);
+
+    document.getElementById('w-loading').style.display='none';
+    document.getElementById('w-main').style.display='block';
+    document.getElementById('w-icon').textContent = WEATHER_ICONS[code]||'🌤️';
+    document.getElementById('w-desc').textContent = (WEATHER_DESC[code]||'맑음')+(temp>=30?' (폭염)':temp<=0?' (영하)':'');
+    document.getElementById('w-loc').textContent  = '📍 '+(locName||'현재 위치');
+    document.getElementById('w-temp').textContent = temp+'°';
+    document.getElementById('w-feel').textContent = '체감 '+feel+'°';
+    document.getElementById('w-hum').textContent  = c.relative_humidity_2m+'%';
+    document.getElementById('w-wind').textContent = (c.wind_speed_10m/3.6).toFixed(1)+'m/s';
+    document.getElementById('w-cloud').textContent= c.cloud_cover+'%';
+
+    // 동적 배경
+    var bgMap={hot:'linear-gradient(135deg,#fff3e0,#fce4ec)',mild:'linear-gradient(135deg,#e8f5e9,#e3f2fd)',
+      cold:'linear-gradient(135deg,#e3f2fd,#e8eaf6)',rainy:'linear-gradient(135deg,#eceff1,#e0e0e0)',
+      snowy:'linear-gradient(135deg,#e8eaf6,#f3e5f5)',cloudy:'linear-gradient(135deg,#f5f5f5,#eceff1)'};
+    document.body.style.background = bgMap[weatherState]||bgMap.mild;
+
+    if (fortuneData) showResult();
+  }).catch(function(){ showWeatherErr(); });
+}
+
+function showWeatherErr(){
+  document.getElementById('w-loading').style.display='none';
+  document.getElementById('w-err').style.display='block';
+}
+function useSeoul(){
+  document.getElementById('w-err').style.display='none';
+  document.getElementById('w-loading').style.display='block';
+  loadWeather(37.5665,126.9780,'서울');
+}
+function getLocName(lat,lon,cb){
+  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json&accept-language=ko',
+    {headers:{'User-Agent':'Jutopia/1.0'}})
+    .then(function(r){return r.json();})
+    .then(function(d){var a=d.address||{};cb(a.city||a.town||a.county||'');})
+    .catch(function(){cb('');});
+}
+function getLocation(){
+  if(!navigator.geolocation){useSeoul();return;}
+  navigator.geolocation.getCurrentPosition(
+    function(p){getLocName(p.coords.latitude,p.coords.longitude,function(n){loadWeather(p.coords.latitude,p.coords.longitude,n);});},
+    function(){showWeatherErr();},{timeout:8000});
+}
+
+// ── 통합 추천 ──
+function getFortuneTags(){
+  if(!fortuneData) return [];
+  var tags=[];
+  if(fortuneData.total>=70)  tags.push('high_total');
+  if(fortuneData.total<50)   tags.push('low_total');
+  if(fortuneData.money>=70)  tags.push('high_money');
+  if(fortuneData.money<50)   tags.push('low_money');
+  if(fortuneData.health>=70) tags.push('high_health');
+  if(fortuneData.health<50)  tags.push('low_health');
+  if(fortuneData.love>=70)   tags.push('high_love');
+  if(fortuneData.love<50)    tags.push('low_love');
+  return tags;
+}
+
+function scoreMenu(menu, wState, fTags){
+  var score=0;
+  var wMatch = menu.weatherTags.includes(wState);
+  var fMatch = menu.fortuneTags.some(function(t){return fTags.includes(t);});
+  if(wMatch) score+=3;
+  if(fMatch) score+=2;
+  if(wMatch&&fMatch) score+=3; // 둘 다 맞으면 보너스
+  score += Math.random()*1.5; // 랜덤 요소
+  return {score,wMatch,fMatch};
+}
+
+function getComment(wState, temp, fd){
+  var weatherParts = {
+    hot:`<strong>${temp}°의 더운 날씨!</strong> 시원한 메뉴가 생각나는 날이에요`,
+    mild:`<strong>딱 좋은 날씨 ${temp}°!</strong> 뭘 먹어도 맛있을 것 같은 날이에요`,
+    cold:`<strong>${temp}°로 쌀쌀해요.</strong> 따뜻한 국물로 몸을 녹여봐요`,
+    rainy:`<strong>비 오는 날!</strong> 따뜻하고 든든한 메뉴가 생각나요`,
+    snowy:`<strong>눈이 내려요! ❄️</strong> 따뜻한 실내에서 뜨끈한 메뉴 어때요`,
+    cloudy:`<strong>흐린 날씨 ${temp}°.</strong> 기분 전환할 수 있는 메뉴 추천할게요`,
+  };
+  var wp = weatherParts[wState]||weatherParts.mild;
+
+  var fp = '';
+  if(!fd) fp = '';
+  else if(fd.health<50) fp = ' 오늘 <strong>건강운이 낮으니</strong> 보양이 되는 메뉴를 노려봐요!';
+  else if(fd.money<50)  fp = ' 오늘 <strong>금전운이 낮으니</strong> 가성비 좋은 메뉴를 추천해요!';
+  else if(fd.love>=70)  fp = ' 오늘 <strong>애정운이 좋으니</strong> 누군가와 함께 먹으면 더 좋아요! 💑';
+  else if(fd.money>=70) fp = ' 오늘 <strong>금전운이 좋으니</strong> 평소보다 특별한 메뉴 도전해봐요! 💰';
+  else if(fd.total>=70) fp = ' 오늘 <strong>총운이 좋은 날!</strong> 평소 먹고 싶었던 메뉴 도전해봐요! ✨';
+  else fp = ' 오늘 운세와 날씨를 모두 고려한 추천이에요!';
+
+  return wp + '.' + fp;
+}
+
+function getBadge(wMatch, fMatch){
+  if(wMatch && fMatch) return {cls:'badge-both', txt:'날씨+운세'};
+  if(wMatch)           return {cls:'badge-weather', txt:'날씨 맞춤'};
+  if(fMatch)           return {cls:'badge-fortune', txt:'운세 맞춤'};
+  return null;
+}
+function getWhy(menu, wMatch, fMatch, fTags){
+  if(wMatch && fMatch) return '날씨+운세 최적 조합! 🌟';
+  if(fMatch){
+    if(fTags.includes('low_health'))  return '건강운 낮을 때 딱!';
+    if(fTags.includes('low_money'))   return '가성비 최고!';
+    if(fTags.includes('high_love'))   return '애정운 좋을 때 함께!';
+    if(fTags.includes('high_money'))  return '금전운 좋을 때 특별식!';
+    if(fTags.includes('high_total'))  return '총운 좋을 때 도전!';
+    return '오늘 운세에 맞는 메뉴!';
+  }
+  return menu.why||'날씨에 딱 맞는 메뉴!';
+}
+
+function showResult(){
+  var fTags = getFortuneTags();
+  var scored = MENUS.map(function(m){
+    var s = scoreMenu(m, weatherState, fTags);
+    return {menu:m, score:s.score, wMatch:s.wMatch, fMatch:s.fMatch};
+  });
+  scored.sort(function(a,b){return b.score-a.score;});
+
+  // 상위 8개 중 랜덤 4개 뽑기 (다양성)
+  var pool = scored.slice(0, Math.min(8+shuffleCount*2, scored.length));
+  // 셔플
+  for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}
+  var picks = pool.slice(0,4);
+
+  // 댓글
+  document.getElementById('result-comment').style.borderColor = weatherState==='rainy'?'#3498db':
+    weatherState==='snowy'?'#9b59b6':weatherState==='hot'?'#e74c3c':'#3498db';
+  document.getElementById('result-comment-txt').innerHTML = getComment(weatherState, weatherTemp, fortuneData);
+
+  // 태그
+  var wNames={hot:'더움',mild:'선선',cold:'추움',rainy:'비',snowy:'눈',cloudy:'흐림'};
+  document.getElementById('tag-weather').textContent = '🌤️ '+( wNames[weatherState]||'날씨');
+
+  // 메뉴 카드
   var grid = document.getElementById('menu-grid');
-  grid.innerHTML = '';
-  currentMenus.forEach(function(m) {
-    var card = document.createElement('div');
-    card.className = 'menu-card';
-    card.innerHTML =
-      '<span class="m-emoji">' + m.emoji + '</span>' +
-      '<div class="m-name">' + m.name + '</div>' +
-      '<div class="m-desc">' + m.desc + '</div>' +
-      '<div class="m-why">' + m.why + '</div>' +
-      (m.badge ? '<div class="m-badge">' + m.badge + '</div>' : '');
-    card.addEventListener('click', function() {
-      document.querySelectorAll('.menu-card').forEach(function(c){ c.classList.remove('picked'); });
+  grid.innerHTML='';
+  picks.forEach(function(p){
+    var badge = getBadge(p.wMatch, p.fMatch);
+    var why   = getWhy(p.menu, p.wMatch, p.fMatch, fTags);
+    var card  = document.createElement('div');
+    card.className='menu-card'+(p.wMatch&&p.fMatch?' highlight':'');
+    card.innerHTML=
+      '<span class="m-emoji">'+p.menu.emoji+'</span>'+
+      '<div class="m-name">'+p.menu.name+'</div>'+
+      '<div class="m-desc">'+p.menu.desc+'</div>'+
+      '<div class="m-why">'+why+'</div>'+
+      (badge?'<div class="m-badge '+badge.cls+'">'+badge.txt+'</div>':'');
+    card.addEventListener('click',function(){
+      document.querySelectorAll('.menu-card').forEach(function(c){c.classList.remove('picked');});
       card.classList.add('picked');
     });
     grid.appendChild(card);
   });
+
+  document.getElementById('result-section').style.display='block';
 }
 
-function shuffle() {
+function shuffle(){
   shuffleCount++;
-  showMenus(currentState);
-  // 버튼 텍스트 변경
-  var btn = document.getElementById('btn-shuffle');
-  btn.textContent = '🎲 또 다른 메뉴 ('+shuffleCount+'번째)';
-  setTimeout(function(){ btn.textContent = '🎲 다른 메뉴 추천받기'; }, 1500);
+  showResult();
+}
+function resetFortune(){
+  fortuneData=null;
+  document.getElementById('fortune-form').style.display='block';
+  document.getElementById('fortune-result').style.display='none';
+  document.getElementById('result-section').style.display='none';
+  document.getElementById('birth-input').value='';
+  shuffleCount=0;
 }
 
-// ── 날씨 데이터 로드 ──
-function loadWeather(lat, lon, locName) {
-  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat +
-    '&longitude=' + lon +
-    '&current=temperature_2m,apparent_temperature,relative_humidity_2m,' +
-    'weather_code,wind_speed_10m,cloud_cover,is_day' +
-    '&timezone=Asia%2FSeoul&forecast_days=1';
-
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(data) {
-      var c = data.current;
-      var temp = Math.round(c.temperature_2m);
-      var feel = Math.round(c.apparent_temperature);
-      var hum = c.relative_humidity_2m;
-      var wind = (c.wind_speed_10m / 3.6).toFixed(1); // km/h → m/s
-      var cloud = c.cloud_cover;
-      var code = c.weather_code;
-      var isDay = c.is_day;
-
-      document.getElementById('w-loading').style.display = 'none';
-      document.getElementById('w-main').style.display = 'block';
-      document.getElementById('w-icon').textContent = getWeatherIcon(code, isDay);
-      document.getElementById('w-temp').textContent = temp + '°';
-      document.getElementById('w-feel').textContent = '체감 ' + feel + '°';
-      document.getElementById('w-desc').textContent = getWeatherDesc(code, temp);
-      document.getElementById('w-loc').textContent = '📍 ' + (locName || '현재 위치');
-      document.getElementById('w-hum').textContent = hum + '%';
-      document.getElementById('w-wind').textContent = wind + 'm/s';
-      document.getElementById('w-cloud').textContent = cloud + '%';
-
-      // 날씨 상태 결정
-      currentState = getWeatherState(code, temp, isDay);
-
-      // 날씨 멘트
-      var comment = document.getElementById('w-comment');
-      comment.style.display = 'block';
-      document.getElementById('w-comment-txt').innerHTML = getWeatherComment(currentState, temp);
-
-      // 메뉴 추천
-      document.getElementById('menu-section').style.display = 'block';
-      showMenus(currentState);
-
-      // 동적 배경
-      var bgMap = {
-        hot: 'linear-gradient(135deg,#fff3e0,#ffe0b2)',
-        mild: 'linear-gradient(135deg,#e8f5e9,#e3f2fd)',
-        cold: 'linear-gradient(135deg,#e3f2fd,#e8eaf6)',
-        rainy: 'linear-gradient(135deg,#eceff1,#e0e0e0)',
-        snowy: 'linear-gradient(135deg,#e8eaf6,#f3e5f5)',
-        cloudy: 'linear-gradient(135deg,#f5f5f5,#eceff1)',
-      };
-      document.body.style.background = bgMap[currentState] || bgMap.mild;
-    })
-    .catch(function() {
-      showError();
-    });
-}
-
-function showError() {
-  document.getElementById('w-loading').style.display = 'none';
-  document.getElementById('err').style.display = 'block';
-}
-
-function useDefaultLocation() {
-  document.getElementById('err').style.display = 'none';
-  document.getElementById('w-loading').style.display = 'block';
-  loadWeather(37.5665, 126.9780, '서울');
-}
-
-function retryLocation() {
-  document.getElementById('menu-section').style.display = 'none';
-  document.getElementById('w-comment').style.display = 'none';
-  document.getElementById('w-main').style.display = 'none';
-  document.getElementById('w-loading').style.display = 'block';
-  getLocation();
-}
-
-// ── 역지오코딩 (도시명 가져오기) ──
-function getLocName(lat, lon, cb) {
-  var url = 'https://nominatim.openstreetmap.org/reverse?lat=' + lat +
-    '&lon=' + lon + '&format=json&accept-language=ko';
-  fetch(url, {headers:{'User-Agent':'Jutopia/1.0'}})
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var addr = d.address || {};
-      var name = addr.city || addr.town || addr.county || addr.state || '';
-      cb(name);
-    })
-    .catch(function(){ cb(''); });
-}
-
-function getLocation() {
-  if (!navigator.geolocation) {
-    useDefaultLocation(); return;
-  }
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      var lat = pos.coords.latitude;
-      var lon = pos.coords.longitude;
-      getLocName(lat, lon, function(name) {
-        loadWeather(lat, lon, name);
-      });
-    },
-    function() { showError(); },
-    { timeout: 8000 }
-  );
-}
+// 키보드 엔터
+document.getElementById('birth-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter') calcFortune();
+});
 
 // 시작
 getLocation();
