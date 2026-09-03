@@ -429,8 +429,7 @@ function calcFortune() {
   document.getElementById('fortune-form').style.display='none';
   document.getElementById('fortune-result').style.display='block';
 
-  var age = today.getFullYear() - year + 1;
-  document.getElementById('f-name').textContent = year+'년생 ('+age+'세)';
+  document.getElementById('f-name').textContent = year+'년생';
 
   var stars = Math.round(total/20);
   document.getElementById('f-star').textContent = '★'.repeat(stars) + '☆'.repeat(5-stars);
